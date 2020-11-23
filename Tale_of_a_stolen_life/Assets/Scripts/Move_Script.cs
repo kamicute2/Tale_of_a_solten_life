@@ -8,9 +8,13 @@ public class Move_Script : MonoBehaviour
     public Vector2 direction = new Vector2(-1, 0);
     private Vector2 movement;
     private Rigidbody2D rb;
+    //public Animator animator;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        //animator = GetComponent<Animator>();
+        rb.gravityScale = 0;
+        rb.drag = 9;
     }
     void Update()
     {
@@ -20,7 +24,13 @@ public class Move_Script : MonoBehaviour
     void FixedUpdate()
     {
         rb.velocity = movement;
-        rb.gravityScale = 0;
-        rb.drag = 9;
+        //if ((Input.GetKey(KeyCode.D)) || (Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S)))
+        //{
+        //    animator.SetBool("Player_run", true);
+        //}
+        //else
+        //{
+        //    animator.SetBool("Player_run", false);
+        //}
     }
 }
