@@ -5,7 +5,9 @@ public class EnemyAI : MonoBehaviour
 {
 	public int points = 0;
 	float xRight, y, xLeft, distanceRight, distanceLeft;
-	public bool isLeft = false, isRight = false, isAttacking;
+	public bool isLeft = false, isRight = false;
+	public bool isPoint = false;
+	public bool isAttacking;
 	// точки, между которыми бот будет двигаться, в ожидании игрока
 	public Transform waypointA;
 	public Transform waypointB;
@@ -18,6 +20,7 @@ public class EnemyAI : MonoBehaviour
 	private Vector2 endPositionRight;
 	private Vector2 endPositionLeft;
 	private float progress;
+	public Transform pointBound;
 	public Transform player_info;
 	private GameObject player;
 	public Animator animator;
@@ -27,63 +30,81 @@ public class EnemyAI : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		rb.freezeRotation = true;
 		player = GameObject.FindGameObjectWithTag("Player");
+		player_info = player.GetComponent<Transform>();
 		animator = GetComponent<Animator>();
 		coll = GetComponent<Collider2D>();
 		coll.isTrigger = true;
 	}
-	void OnCollisionEnter2D(Collision2D collision)
-	{
-		// физический контакт с целью
-		Debug.Log(collision.gameObject.name);
-
-	}
     private void Update()
     {
+		player_info = player.GetComponent<Transform>();
 		//Debug.Log(gameObject.name + ' ' + isLeft);
 		//Debug.Log(isRight);
 		pos = transform.position;
+		//Мы вычитаем из позиции объекта позицию игрока, и по ней определяем вектор направления движения
 		endPositionRight = new Vector2(player_info.transform.position.x + 1f, player_info.transform.position.y);
 		endPositionLeft = new Vector2(player_info.transform.position.x + -1f, player_info.transform.position.y);
 		xRight = pos.x - endPositionRight.x;
 		xLeft = pos.x - endPositionLeft.x;
 		y = pos.y - endPositionRight.y;
-		if (isLeft)
+        if (isPoint)
         {
-			if (points == 0)
-				points += 1;
-			if (player.GetComponent<Enemy_Target>().isLeft)
-				player.GetComponent<Enemy_Target>().isLeft = false;
-			if (!isAttacking)
+			if (isLeft)
 			{
-				direction = SetDirection(xLeft, y);
-				transform.position = new Vector2(transform.position.x + speed.x * direction.x * Time.deltaTime, transform.position.y + speed.y * direction.y * Time.deltaTime);
+				if (points == 0)
+					points += 1;
+				if (player.GetComponent<Enemy_Target>().isLeft)
+					player.GetComponent<Enemy_Target>().isLeft = false;
+				if (!isAttacking)
+				{
+					direction = SetDirection(xLeft, y);
+					transform.position = new Vector2(transform.position.x + speed.x * direction.x * Time.deltaTime, transform.position.y + speed.y * direction.y * Time.deltaTime);
+				}
 			}
-        }
-		if (isRight)
-		{
-			if (points == 0)
-				points += 1;
-			if (player.GetComponent<Enemy_Target>().isRight)
-				player.GetComponent<Enemy_Target>().isRight = false;
-			if (!isAttacking)
+			if (isRight)
 			{
-				direction = SetDirection(xRight, y);
-				transform.position = new Vector2(transform.position.x + speed.x * direction.x * Time.deltaTime, transform.position.y + speed.y * direction.y * Time.deltaTime);
+				if (points == 0)
+					points += 1;
+				if (player.GetComponent<Enemy_Target>().isRight)
+					player.GetComponent<Enemy_Target>().isRight = false;
+				if (!isAttacking)
+				{
+					direction = SetDirection(xRight, y);
+					transform.position = new Vector2(transform.position.x + speed.x * direction.x * Time.deltaTime, transform.position.y + speed.y * direction.y * Time.deltaTime);
+				}
+			}
+			if (direction.x == -1)
+			{
+				transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
+				animator.Play("Enemy_Run");
+			}
+			if (direction.x == 1)
+			{
+				transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+				animator.Play("Enemy_Run");
 			}
 		}
-		if (direction.x == -1)
-		{
-			transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
-			//animator.Play("Enemy_run");
+		else
+        {
+			//Передвежение до обязательной точки
+			direction = SetDirection(pos.x - pointBound.position.x, pos.y - pointBound.position.y);
+			if (direction.x == -1)
+			{
+				transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
+				animator.Play("Enemy_Run");
+			}
+			if (direction.x == 1)
+			{
+				transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+				animator.Play("Enemy_Run");
+			}
+			transform.position = new Vector2(transform.position.x + speed.x * direction.x * Time.deltaTime, transform.position.y + speed.y * direction.y * Time.deltaTime);
+			//Функция делает примерное сравнение
+			if (Mathf.Abs(pos.x - pointBound.position.x) < 0.4f && Mathf.Abs(pos.y - pointBound.position.y) < 0.4f)
+            {
+				isPoint = true;
+			}
 		}
-		if (direction.x == 1)
-		{
-			transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-			//animator.Play("Enemy_run");
-		}
-
-
-
 	}
 	Vector2 SetDirection(float x, float y)
 	{

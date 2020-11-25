@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\Player_Scripts\Player_DamageTrigger.cs" />
     <Compile Include="Assets\Scripts\Player_Scripts\Player_Health.cs" />
     <Compile Include="Assets\Scripts\Player_Scripts\Player_Stats.cs" />
+    <Compile Include="Assets\Scripts\Scene_Scripts\Spawner.cs" />
     <Compile Include="Assets\Singleplayer.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.10f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
