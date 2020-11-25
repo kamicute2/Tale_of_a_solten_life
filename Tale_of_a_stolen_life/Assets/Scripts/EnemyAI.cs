@@ -3,24 +3,33 @@ using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
+	public int points = 0;
+	float xRight, y, xLeft, distanceRight, distanceLeft;
+	public bool isLeft = false, isRight = false, isAttacking;
 	// точки, между которыми бот будет двигаться, в ожидании игрока
 	public Transform waypointA;
 	public Transform waypointB;
-	public Vector2 speed = new Vector2(0.05f, 0.01f); // скорость движения
+	public Vector2 speed = new Vector2(2f, 1f); // скорость движения
 	private float curdist; //дистанция от игрока до бота
 	private bool isTarget;
 	private Rigidbody2D rb;
 	public Vector2 direction;
 	private Vector2 pos;
-	private Vector2 endPosition;
-	private Vector2 movement;
-	public float step = 0.5f;	
+	private Vector2 endPositionRight;
+	private Vector2 endPositionLeft;
 	private float progress;
-	public Transform player;
+	public Transform player_info;
+	private GameObject player;
+	public Animator animator;
+	private Collider2D coll;
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		rb.freezeRotation = true;
+		player = GameObject.FindGameObjectWithTag("Player");
+		animator = GetComponent<Animator>();
+		coll = GetComponent<Collider2D>();
+		coll.isTrigger = true;
 	}
 	void OnCollisionEnter2D(Collision2D collision)
 	{
@@ -30,14 +39,49 @@ public class EnemyAI : MonoBehaviour
 	}
     private void Update()
     {
-	    float x = pos.x - endPosition.x;
-		float y = pos.y - endPosition.y;
+		//Debug.Log(gameObject.name + ' ' + isLeft);
+		//Debug.Log(isRight);
 		pos = transform.position;
-		endPosition = new Vector2(player.transform.position.x + 1f, player.transform.position.y - 0.55f);
-		direction = SetDirection(x, y);
-		//movement = new Vector2(speed.x * direction.x, speed.y * direction.y);
-		transform.position = new Vector2(transform.position.x + speed.x * direction.x, transform.position.y + speed.x * direction.y);
-	 //	transform.position = new Vector2(transform.position.x - step, transform.position.y - step);
+		endPositionRight = new Vector2(player_info.transform.position.x + 1f, player_info.transform.position.y);
+		endPositionLeft = new Vector2(player_info.transform.position.x + -1f, player_info.transform.position.y);
+		xRight = pos.x - endPositionRight.x;
+		xLeft = pos.x - endPositionLeft.x;
+		y = pos.y - endPositionRight.y;
+		if (isLeft)
+        {
+			if (points == 0)
+				points += 1;
+			if (player.GetComponent<Enemy_Target>().isLeft)
+				player.GetComponent<Enemy_Target>().isLeft = false;
+			if (!isAttacking)
+			{
+				direction = SetDirection(xLeft, y);
+				transform.position = new Vector2(transform.position.x + speed.x * direction.x * Time.deltaTime, transform.position.y + speed.y * direction.y * Time.deltaTime);
+			}
+        }
+		if (isRight)
+		{
+			if (points == 0)
+				points += 1;
+			if (player.GetComponent<Enemy_Target>().isRight)
+				player.GetComponent<Enemy_Target>().isRight = false;
+			if (!isAttacking)
+			{
+				direction = SetDirection(xRight, y);
+				transform.position = new Vector2(transform.position.x + speed.x * direction.x * Time.deltaTime, transform.position.y + speed.y * direction.y * Time.deltaTime);
+			}
+		}
+		if (direction.x == -1)
+		{
+			transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
+			//animator.Play("Enemy_run");
+		}
+		if (direction.x == 1)
+		{
+			transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+			//animator.Play("Enemy_run");
+		}
+
 
 
 	}
@@ -109,4 +153,5 @@ public class EnemyAI : MonoBehaviour
 			waypointB = clone.transform;
 		}
 	}
+	
 }
