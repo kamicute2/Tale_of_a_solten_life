@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    public bool mojno;
     public float timeRepeat = 3f;
-    public int count = 0, maxCount = 5;
+    public int count = 5, maxCount = 5;
     public Transform spawnPos;
     public Transform pointBound;
     public GameObject Enemy;
     private GameObject enemyAwake;
+    public GameObject spawn;
     private void Awake()
     {
         spawnPos = GetComponent<Transform>();
         pointBound = gameObject.transform.GetChild(0).gameObject.transform;
-        StartCoroutine(OnSpawn());
+        
     }
-
+    private void Update()
+    {
+        if (mojno)
+        {
+            count = 0;
+            StartCoroutine(OnSpawn());
+            mojno = false;
+        }
+    }
     void Repeat()
     {
         if (count < maxCount)

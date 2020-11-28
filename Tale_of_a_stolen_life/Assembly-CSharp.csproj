@@ -63,10 +63,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Prefabs\EnemyAIEditor.cs" />
     <Compile Include="Assets\Prefabs\EnemyAIx.cs" />
     <Compile Include="Assets\Prefabs\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Boss_Spawner.cs" />
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
+    <Compile Include="Assets\Scripts\EnemyAI_Boss.cs" />
+    <Compile Include="Assets\Scripts\Enemy_Damage_Trigger.cs" />
     <Compile Include="Assets\Scripts\Enemy_Stats.cs" />
     <Compile Include="Assets\Scripts\Move_Script.cs" />
     <Compile Include="Assets\Scripts\Player_Scripts\Enemy_Target.cs" />
@@ -76,8 +78,12 @@
     <Compile Include="Assets\Scripts\Player_Scripts\Player_DamageTrigger.cs" />
     <Compile Include="Assets\Scripts\Player_Scripts\Player_Health.cs" />
     <Compile Include="Assets\Scripts\Player_Scripts\Player_Stats.cs" />
+    <Compile Include="Assets\Scripts\Scene_Scripts\CameraScript.cs" />
     <Compile Include="Assets\Scripts\Scene_Scripts\Spawner.cs" />
+    <Compile Include="Assets\Scripts\Scene_Scripts\Start.cs" />
+    <Compile Include="Assets\Scripts\Scene_Scripts\Timer.cs" />
     <Compile Include="Assets\Singleplayer.cs" />
+    <Compile Include="Assets\UIManager.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.10f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

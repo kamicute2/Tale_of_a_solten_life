@@ -15,6 +15,7 @@ public class Player_Control : MonoBehaviour
     //private bool isGrounded = true;
     bool isJumping = false;
     //Прочие штуки
+    public bool isPaused = false;
     private Rigidbody2D rb;
     public Animator animator;
     public GameObject attackHitBox;
@@ -52,16 +53,23 @@ public class Player_Control : MonoBehaviour
             animator.Play("Player_jump");
             //rb.velocity = new Vector2(speed.x * movex, rb.velocity.y);
             StartCoroutine(DoJump());
-            //РЕАЛИЗУЙ, МАТЬ ТВОЮ, ЗДЕСЬ ПРЫЖОК
-            //rb.velocity =  Vector2.up * jumpForce;
-            //StartCoroutine(DoJump());
-            //ПАШОЛ НАХУЙ
+            
         }
     } 
 
     void FixedUpdate()
     {
-
+        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused)
+        {
+            Camera.main.GetComponent<UIManager>().PauseOn();
+            isPaused = true;
+        }else
+        if (Input.GetKeyDown(KeyCode.Escape) && isPaused)
+        {
+            isPaused = false;
+            Camera.main.GetComponent<UIManager>().PauseOff();
+        }
+            
         if ((!isAttacking) && (!isJumping))
             rb.velocity = movement;
         if (isAttacking)
@@ -73,7 +81,8 @@ public class Player_Control : MonoBehaviour
                 {
                     transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                     animator.Play("Player_run");
-                }
+                    GameObject.Find("Objects_Player").transform.localScale = new Vector3(0.6666667f, 0.6666667f, 0.6666667f);
+            }
 
             }
             else if (Input.GetKey(KeyCode.A))
@@ -82,6 +91,7 @@ public class Player_Control : MonoBehaviour
                 {
                     transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
                     animator.Play("Player_run");
+                GameObject.Find("Objects_Player").transform.localScale = new Vector3(-0.6666667f, 0.6666667f, 0.6666667f);
                 }
             }
             else if ((Input.GetKey(KeyCode.S)) || (Input.GetKey(KeyCode.W)))
